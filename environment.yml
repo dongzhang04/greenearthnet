@@ -1,0 +1,40 @@
+name: greenearthnet
+channels:
+  - nvidia
+  - pytorch
+  - conda-forge
+dependencies:
+  - python=3.10
+  - pytorch=1.13.1
+  - torchvision=0.14.1
+  - torchaudio=0.13.1
+  - pytorch-cuda=11.6
+  - u8darts-notorch
+  - numpy=1.26.4
+  - matplotlib
+  - pillow
+  - xarray
+  - zarr
+  - netcdf4
+  - scipy
+  - imageio
+  - networkx
+  - scikit-image
+  - s3fs
+  - pyproj
+  - pyarrow
+  - seaborn
+  - cartopy
+  - tensorboard
+  - dask
+  - statsmodels
+  - "pytorch-lightning>=1.9,<2.0"
+  - "torchmetrics>=0.11,<0.12"
+  - pip
+  - pip:
+      - earthnet
+      - earthnet-minicuber
+      - segmentation-models-pytorch
+      - albumentations
+      - git+https://github.com/earthnet2021/earthnet-models-pytorch.git@v0.1.0
+      # - pip-system-certs

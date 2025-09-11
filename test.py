@@ -2,6 +2,8 @@
 """Test Script
 """
 from argparse import ArgumentParser
+import os
+os.environ["CUDA_VISIBLE_DEVICES"] = ""
 
 import pytorch_lightning as pl
 from earthnet_models_pytorch.data import DATASETS
@@ -12,6 +14,8 @@ from pytorch_lightning.callbacks import TQDMProgressBar
 
 
 def test_model(setting_dict: dict, checkpoint: str):
+    print("inside test")
+
     # Data
     data_args = [
         "--{}={}".format(key, value) for key, value in setting_dict["Data"].items()
@@ -20,6 +24,8 @@ def test_model(setting_dict: dict, checkpoint: str):
     data_parser = DATASETS[setting_dict["Setting"]].add_data_specific_args(data_parser)
     data_params = data_parser.parse_args(data_args)
     dm = DATASETS[setting_dict["Setting"]](data_params)
+
+    print("loaded dataset")
 
     # Model
     model_args = [
@@ -31,6 +37,8 @@ def test_model(setting_dict: dict, checkpoint: str):
     )
     model_params = model_parser.parse_args(model_args)
     model = MODELS[setting_dict["Architecture"]](model_params)
+
+    print("loaded model")
 
     # Task
     task_args = [
@@ -50,13 +58,21 @@ def test_model(setting_dict: dict, checkpoint: str):
             hparams=task_params,
         )
 
+    print("loaded task")
     # Trainer
 
     trainer_dict = setting_dict["Trainer"]
     trainer_dict["logger"] = False
+
+    print(trainer_dict)
+
     trainer = pl.Trainer(callbacks=TQDMProgressBar(refresh_rate=10), **trainer_dict)
 
+    print("starting testing task")
+
     dm.setup("test")
+
+    print("finished")
 
     trainer.test(model=task, datamodule=dm, ckpt_path=None)
 
@@ -102,7 +118,7 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
-    import os
+    # import os
 
     for k, v in os.environ.items():
         if k.startswith("SLURM"):
@@ -117,6 +133,10 @@ if __name__ == "__main__":
         setting_dict["Data"]["base_dir"] = args.data_dir
 
     if "gpus" in setting_dict["Trainer"]:
-        setting_dict["Trainer"]["gpus"] = args.gpus
+        del setting_dict["Trainer"]["gpus"]
+        setting_dict["Trainer"]["accelerator"] = "cpu"
+        # setting_dict["Trainer"]["devices"] = 1
 
+    print("entering test")
+    print(setting_dict)
     test_model(setting_dict, args.checkpoint)

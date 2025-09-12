@@ -68,13 +68,20 @@ def test_model(setting_dict: dict, checkpoint: str):
 
     trainer = pl.Trainer(callbacks=TQDMProgressBar(refresh_rate=10), **trainer_dict)
 
-    print("starting testing task")
+    print("loaded trainer")
 
     dm.setup("test")
 
-    print("finished")
+    print("Checking dataloaders...")
+    test_dl = dm.test_dataloader()
+    print("Test loader batches:", len(test_dl))
+
+    print("starting task")
 
     trainer.test(model=task, datamodule=dm, ckpt_path=None)
+
+    print("finished task")
+
 
 
 if __name__ == "__main__":
@@ -136,6 +143,8 @@ if __name__ == "__main__":
         del setting_dict["Trainer"]["gpus"]
         setting_dict["Trainer"]["accelerator"] = "cpu"
         # setting_dict["Trainer"]["devices"] = 1
+        setting_dict["Trainer"]["strategy"] = "auto"
+
 
     print("entering test")
     print(setting_dict)

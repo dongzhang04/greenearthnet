@@ -37,4 +37,4 @@ dependencies:
       - segmentation-models-pytorch
       - albumentations
       - git+https://github.com/earthnet2021/earthnet-models-pytorch.git@v0.1.0
-      # - pip-system-certs
+      - pip-system-certs

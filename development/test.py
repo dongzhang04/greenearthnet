@@ -2,6 +2,8 @@
 """Test Script
 """
 from argparse import ArgumentParser
+import os
+os.environ["CUDA_VISIBLE_DEVICES"] = ""
 
 import pytorch_lightning as pl
 from earthnet_models_pytorch.data import DATASETS
@@ -12,6 +14,8 @@ from pytorch_lightning.callbacks import TQDMProgressBar
 
 
 def test_model(setting_dict: dict, checkpoint: str):
+    print("inside test")
+
     # Data
     data_args = [
         "--{}={}".format(key, value) for key, value in setting_dict["Data"].items()
@@ -20,6 +24,8 @@ def test_model(setting_dict: dict, checkpoint: str):
     data_parser = DATASETS[setting_dict["Setting"]].add_data_specific_args(data_parser)
     data_params = data_parser.parse_args(data_args)
     dm = DATASETS[setting_dict["Setting"]](data_params)
+
+    print("loaded dataset")
 
     # Model
     model_args = [
@@ -32,33 +38,67 @@ def test_model(setting_dict: dict, checkpoint: str):
     model_params = model_parser.parse_args(model_args)
     model = MODELS[setting_dict["Architecture"]](model_params)
 
+    print("loaded model")
+
     # Task
     task_args = [
         "--{}={}".format(key, value) for key, value in setting_dict["Task"].items()
     ]
+    # task_parser = ArgumentParser()
+    # task_parser = SpatioTemporalTask.add_task_specific_args(task_parser)
+    # task_params = task_parser.parse_args(task_args)
+    # task = SpatioTemporalTask(model=model, hparams=task_params)
+
+    # if checkpoint != "None":
+    #     task.load_from_checkpoint(
+    #         checkpoint_path=checkpoint,
+    #         context_length=setting_dict["Task"]["context_length"],
+    #         target_length=setting_dict["Task"]["target_length"],
+    #         model=model,
+    #         hparams=task_params,
+    #     )
     task_parser = ArgumentParser()
     task_parser = SpatioTemporalTask.add_task_specific_args(task_parser)
     task_params = task_parser.parse_args(task_args)
-    task = SpatioTemporalTask(model=model, hparams=task_params)
 
     if checkpoint != "None":
-        task.load_from_checkpoint(
+        task = SpatioTemporalTask.load_from_checkpoint(
             checkpoint_path=checkpoint,
-            context_length=setting_dict["Task"]["context_length"],
-            target_length=setting_dict["Task"]["target_length"],
             model=model,
             hparams=task_params,
         )
+    else:
+        task = SpatioTemporalTask(model=model, hparams=task_params)
 
+    print("loaded task")
     # Trainer
 
     trainer_dict = setting_dict["Trainer"]
     trainer_dict["logger"] = False
+
+    print(trainer_dict)
+
     trainer = pl.Trainer(callbacks=TQDMProgressBar(refresh_rate=10), **trainer_dict)
+
+    print("loaded trainer")
 
     dm.setup("test")
 
-    trainer.test(model=task, datamodule=dm, ckpt_path=None)
+    print("Checking dataloaders...")
+    try:
+        test_dl = dm.test_dataloader()
+        print("Test loader batches:", len(test_dl))
+    except Exception as e:
+        print("No test_dataloader:", e)
+
+    print("Has test_step?", hasattr(task, "test_step"))
+    print("Has validation_step?", hasattr(task, "validation_step"))
+
+    print("starting test")
+
+    trainer.test(model=task, datamodule=dm, ckpt_path=None, verbose=True)
+
+    print("finished test")
 
 
 if __name__ == "__main__":
@@ -102,7 +142,7 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
-    import os
+    # import os
 
     for k, v in os.environ.items():
         if k.startswith("SLURM"):
@@ -117,6 +157,12 @@ if __name__ == "__main__":
         setting_dict["Data"]["base_dir"] = args.data_dir
 
     if "gpus" in setting_dict["Trainer"]:
-        setting_dict["Trainer"]["gpus"] = args.gpus
+        del setting_dict["Trainer"]["gpus"]
+        setting_dict["Trainer"]["accelerator"] = "cpu"
+        # setting_dict["Trainer"]["devices"] = 1
+        setting_dict["Trainer"]["strategy"] = "auto"
 
+    print("entering test")
+    print(setting_dict)
     test_model(setting_dict, args.checkpoint)
+    print("quitting")

@@ -1,3 +1,4 @@
+#code taken from https://pytorch-lightning.readthedocs.io/en/1.5.10/common/trainer.html
 import torch
 import torch.nn as nn
 import torch.nn.functional as F

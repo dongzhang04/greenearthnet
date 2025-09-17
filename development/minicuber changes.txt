@@ -10,7 +10,7 @@
             stack = stack.sel(band="map").expand_dims("band")
             stack = stack.assign_coords(band=["lc"])
 
-(sennbar/c_factor) 
+(sen2nbar/c_factor) 
     if "proj:epsg" in item.properties:
         SOURCE_EPSG = item.properties["proj:epsg"]
     else:

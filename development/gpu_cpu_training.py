@@ -57,6 +57,7 @@ trainer = pl.Trainer(
     max_epochs=2,
     log_every_n_steps=1,
 )
+print("Trainer instantiated")
 trainer.fit(model, dataloader)
 print(f"Trainer on cpu ran successfully")
 

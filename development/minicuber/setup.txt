@@ -8,6 +8,8 @@ pip install earthnet-minicuber
 
 changes to scripts:
 (earthnet-minicuber/providers/ - all scripts requiring epsg)
+replace: epsg = metadata["proj:epsg"]
+with: 
             if "proj:epsg" in metadata:
                 epsg = metadata["proj:epsg"]
             else:
@@ -16,10 +18,14 @@ changes to scripts:
 
 
 (earthnet-minicuber/providers/esawc)
+replace: stack["band"] = ["lc"] 
+with:
             stack = stack.sel(band="map").expand_dims("band")
             stack = stack.assign_coords(band=["lc"])
 
 (sen2nbar/c_factor) 
+replace: SOURCE_EPSG = item.properties["proj:epsg"]
+with:
     if "proj:epsg" in item.properties:
         SOURCE_EPSG = item.properties["proj:epsg"]
     else:

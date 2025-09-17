@@ -229,7 +229,11 @@ class Landsat(provider_base.Provider):
                 return None
                 
             metadata = items_ls.to_dict()['features'][0]["properties"]
-            epsg = metadata["proj:epsg"]
+            if "proj:epsg" in metadata:
+                epsg = metadata["proj:epsg"]
+            else:
+                epsg = metadata["proj:code"].split(":")[-1]
+                epsg = int(epsg)
 
             stack = stackstac.stack(items_ls, epsg = epsg, assets = self.bands, dtype = "float32", properties = False, band_coords = False, bounds_latlon = bbox, xy_coords = 'center', chunksize = 1024)
 

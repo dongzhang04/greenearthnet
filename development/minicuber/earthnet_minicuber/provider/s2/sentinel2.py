@@ -146,7 +146,11 @@ class Sentinel2(provider_base.Provider):
                 return None
 
             metadata = items_s2.to_dict()['features'][0]["properties"]
-            epsg = metadata["proj:epsg"]
+            if "proj:epsg" in metadata:
+                epsg = metadata["proj:epsg"]
+            else:
+                epsg = metadata["proj:code"].split(":")[-1]
+                epsg = int(epsg)
 
 
             stack = stackstac.stack(items_s2, epsg = epsg, assets = self.bands, dtype = "float32", properties = ["sentinel:product_id"], band_coords = False, bounds_latlon = bbox, xy_coords = 'center', chunksize = 2048,errors_as_nodata=(RasterioIOError('.*'), ), gdal_env=gdal_session)

@@ -1,3 +1,7 @@
+This directory contains survey papers that may provide context to the project. 
+Summaries of the papers can be found below:
+
+
 Benson, V. et al. Multi-modal learning for geospatial vegetation forecasting. In Proc. IEEE/CVF Conference on Computer Vision and Pattern Recognition 27788–27799 (IEEE, 2024).
 - Contextformer architecture:
 1. uses PVT v2 as the vision backbone for encoding spatial context with Sentinel 2 satellite imagery and elevation data, with elevation included as an additional channel to Sentinel 2's image channels

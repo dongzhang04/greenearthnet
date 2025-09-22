@@ -40,3 +40,12 @@ with:
 (earthnet-minicuber/minicuber)
 add the following code on line 232 
             cube = cube.drop_duplicates(dim='time').sortby('time')
+
+
+bypassing SSL errors when accessing cloud datasets:
+1. download the NRCan root certificate as a crt file 
+2. locate the environemnt's cacert.pem file by running the following commands:
+    >python
+    >import certifi
+    >certifi.where()
+3. open both files in a text editor, copy the NRCan root certificate, then paste the certificate at the bottom of the pem file 

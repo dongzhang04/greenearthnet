@@ -1,7 +1,7 @@
 import earthnet_minicuber as emc
 import matplotlib.pyplot as plt
 
-import fsspec, xarray as xr
+# import fsspec, xarray as xr
 
 # print("single level reanalysis zarr")
 # url = "gs://gcp-public-data-arco-era5/co/single-level-reanalysis.zarr"
@@ -21,7 +21,7 @@ specs = {
     "lon_lat": (43.598946, 3.087414), # center pixel
     "xy_shape": (256, 256), # width, height of cutout around center pixel
     "resolution": 10, # in meters.. will use this on a local UTM grid..
-    "time_interval": "2021-01-01/2021-01-31",
+    "time_interval": "2021-01-01/2021-01-05",
     "providers": [
         {
             "name": "s2",
@@ -39,6 +39,7 @@ specs = {
         #     "name": "ndviclim",
         #     "kwargs": {"bands": ["mean", "std"]}
         # },
+        
         {
             "name": "cop",
             "kwargs": {}
@@ -53,7 +54,7 @@ specs = {
             "name": "era5gcp",
             "kwargs": {"bands": ['t2m', 'pev', 'slhf', 'ssr', 'sp', 'sshf', 'e', 'tp'], "aggregation_types": ["mean", "min", "max"], "zarrurl": "gs://gcp-public-data-arco-era5/ar/full_37-1h-0p25deg-chunk-1.zarr-v3"}
         }
-        ]
+    ]
 }
 
 # greenearthnet example
@@ -76,10 +77,11 @@ specs = {
 #             },
 #         },
 
-#         # SSL certificate error - possibly due to firewall
-#         {"name": "srtm", "kwargs": {"bands": ["dem"]}},
-#         {"name": "alos", "kwargs": {}},
-#         {"name": "cop", "kwargs": {}},
+            # # SSL certificate error due to firewall
+            # # {"name": "srtm", "kwargs": {"bands": ["dem"]}},
+            # {"name": "nasadem", "kwargs": {}},
+            # {"name": "alos", "kwargs": {}},
+            # {"name": "cop", "kwargs": {}},
 #         {
 #             "name": "esawc",
 #             "kwargs": {"bands": ["lc"], "aws_bucket": "planetary_computer"},

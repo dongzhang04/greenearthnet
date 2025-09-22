@@ -1,5 +1,5 @@
-import os
-os.environ["CUDA_VISIBLE_DEVICES"] = ""
+# import os
+# os.environ["CUDA_VISIBLE_DEVICES"] = ""
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -34,7 +34,7 @@ class SimpleClassifier(pl.LightningModule):
         return torch.optim.Adam(self.parameters(), lr=1e-3)
 
 print("before torch.cuda call")
-# print("CUDA available:", torch.cuda.is_available())
+print("CUDA available:", torch.cuda.is_available())
 print("after torch.cuda call")
 
 # for accelerator, devices in [("cpu", 1), ("gpu", 1)]:

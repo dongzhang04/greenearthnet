@@ -229,6 +229,9 @@ class Minicuber:
         
         if "time" in cube:
             cube['time'] = pd.DatetimeIndex(cube['time'].values)
+            # print(cube['time'].values)
+            cube = cube.drop_duplicates(dim='time').sortby('time')
+            # print(cube['time'].values)
 
             cube = cube.sel(time = slice(self.time_interval[:10], self.time_interval[-10:]))
 

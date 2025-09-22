@@ -1,0 +1,9 @@
+conda create -n greenearthnet python=3.10
+conda activate greenearthnet
+conda install pytorch==1.13.1 torchvision==0.14.1 torchaudio==0.13.1 pytorch-cuda=11.6 -c pytorch -c nvidia
+conda install -c conda-forge u8darts-notorch
+conda install -c conda-forge numpy=1.26.4 matplotlib pillow xarray zarr netcdf4 scipy imageio networkx scikit-image s3fs pyproj pyarrow seaborn cartopy tensorboard dask statsmodels
+pip install earthnet earthnet-minicuber segmentation-models-pytorch albumentations pip-system-certs
+python.exe -m pip install pip==24.0 
+pip install pytorch-lightning==1.7.7 torchmetrics==0.7.3 
+pip install git+https://github.com/earthnet2021/earthnet-models-pytorch.git@v0.1.0

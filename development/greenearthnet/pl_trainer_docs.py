@@ -28,7 +28,7 @@ class MNISTClassifier(nn.Module):
 mnist_train = MNIST(os.getcwd(), train=True, download=True)
 mnist_test = MNIST(os.getcwd(), train=False, download=True)
 
-dist.barrier()
+# dist.barrier()
 
 # transforms
 transform = transforms.Compose([

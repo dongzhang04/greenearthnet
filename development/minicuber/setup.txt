@@ -3,7 +3,6 @@ conda create -n minicuber python=3.10 gdal cartopy -c conda-forge
 conda activate minicuber
 pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
 pip install scipy matplotlib seaborn netCDF4 xarray zarr dask shapely pillow pandas s3fs fsspec boto3 psycopg2 pystac-client stackstac==0.4.4 planetary-computer rasterio[s3] rioxarray odc-algo segmentation-models-pytorch folium ipykernel ipywidgets sen2nbar gcsfs
-
 pip install earthnet-minicuber
 
 
@@ -24,6 +23,11 @@ with:
             stack = stack.sel(band="map").expand_dims("band")
             stack = stack.assign_coords(band=["lc"])
 
+(earthnet-minicuber/providers/__init__)
+append era5_gcp to the import statement
+add "era5gcp": era5gcp.ERA5_GCP to PROVIDERS 
+when using the era5gcp provider, use the link: gs://gcp-public-data-arco-era5/ar/full_37-1h-0p25deg-chunk-1.zarr-v3
+
 (sen2nbar/c_factor) 
 replace: SOURCE_EPSG = item.properties["proj:epsg"]
 with:
@@ -31,3 +35,8 @@ with:
         SOURCE_EPSG = item.properties["proj:epsg"]
     else:
         SOURCE_EPSG = int(item.properties["proj:code"].split(":")[-1])
+
+
+(earthnet-minicuber/minicuber)
+add the following code on line 232 
+            cube = cube.drop_duplicates(dim='time').sortby('time')

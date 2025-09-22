@@ -3,7 +3,7 @@
 """
 from argparse import ArgumentParser
 import os
-os.environ["CUDA_VISIBLE_DEVICES"] = ""
+# os.environ["CUDA_VISIBLE_DEVICES"] = ""
 
 import pytorch_lightning as pl
 from earthnet_models_pytorch.data import DATASETS
@@ -160,7 +160,7 @@ if __name__ == "__main__":
         del setting_dict["Trainer"]["gpus"]
         setting_dict["Trainer"]["accelerator"] = "cpu"
         # setting_dict["Trainer"]["devices"] = 1
-        setting_dict["Trainer"]["strategy"] = "auto"
+        setting_dict["Trainer"]["strategy"] = "single_device"
 
     print("entering test")
     print(setting_dict)

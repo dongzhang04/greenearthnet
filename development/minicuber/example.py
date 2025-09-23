@@ -34,11 +34,10 @@ specs = {
         #     "kwargs": {"bands": ["vv", "vh"], "speckle_filter": True, "speckle_filter_kwargs": {"type": "lee", "size": 9}, "aws_bucket": "planetary_computer"} 
         # },
 
-        # SSL certificate error - possibly due to firewall
-        # {
-        #     "name": "ndviclim",
-        #     "kwargs": {"bands": ["mean", "std"]}
-        # },
+        {
+            "name": "ndviclim",
+            "kwargs": {"bands": ["mean", "std"]}
+        },
         
         {
             "name": "cop",
@@ -62,7 +61,7 @@ specs = {
 #     "lon_lat": (43.598946, 3.087414),  # center pixel
 #     "xy_shape": (128, 128),  # width, height of cutout around center pixel
 #     "resolution": 20,  # in meters.. will use this together with grid of primary provider..
-#     "time_interval": "2024-05-01/2024-08-31",
+#     "time_interval": "2024-06-01/2024-08-31",
 #     "providers": [
 #         {
 #             "name": "s2",
@@ -77,11 +76,12 @@ specs = {
 #             },
 #         },
 
-            # # SSL certificate error due to firewall
-            # # {"name": "srtm", "kwargs": {"bands": ["dem"]}},
-            # {"name": "nasadem", "kwargs": {}},
-            # {"name": "alos", "kwargs": {}},
-            # {"name": "cop", "kwargs": {}},
+#             # RasterioIOError('CURL error: schannel: CertGetCertificateChain trust error CERT_TRUST_IS_UNTRUSTED_ROOT')
+#             # {"name": "srtm", "kwargs": {"bands": ["dem"]}},
+
+#             {"name": "nasa", "kwargs": {}},
+#             {"name": "alos", "kwargs": {}},
+#             {"name": "cop", "kwargs": {}},
 #         {
 #             "name": "esawc",
 #             "kwargs": {"bands": ["lc"], "aws_bucket": "planetary_computer"},

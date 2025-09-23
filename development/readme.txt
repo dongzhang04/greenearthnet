@@ -1,2 +1,2 @@
-This directory is meant to separate changes made to the greenearthnet and minicuber scripts over the course of reproducing Vitus Benson's greenearthnet results.
+This directory is meant to separate changes made to the greenearthnet and minicuber scripts over the course of reproducing the greenearthnet results.
 Other testing and intermediate scripts are also included here in order to keep the original repository uncluttered.

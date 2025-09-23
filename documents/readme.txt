@@ -16,10 +16,10 @@ Benson, V. et al. Multi-modal learning for geospatial vegetation forecasting. In
 
 - the model's test sets are comprised of:
 1. Train, a training set from the years 2017-2020
-2. OOD-t test, the main test set containing locations near Train in the years 2021-2022, meant for temporal extrapolation
-3. Val, a set containing the same locations as ODD-t test in the year 2020, allowing for early stopping 
-4. OOD-s test, further locations outside training regions in the years 2017-2019, meant for spatial extrapolation
-5. OOD-st test, the same locations as OOD-s in the years 2021-2022, meant for spatio-temporal extrapolation
+2. OOD-t test, the main test set meant for temporal extrapolation, locations near Train in the years 2021-2022
+3. Val, same locations as ODD-t test in the year 2020, allowing for early stopping 
+4. OOD-s test, locations outside training regions in the years 2017-2019, meant for spatial extrapolation
+5. OOD-st test, same locations as OOD-s in the years 2021-2022, meant for spatio-temporal extrapolation
 
 
 

@@ -44,8 +44,9 @@ add the following code on line 232
 
 bypassing SSL errors when accessing cloud datasets:
 1. download the NRCan root certificate as a crt file 
-2. locate the environemnt's cacert.pem file by running the following commands:
+2. locate the environemnt's cacert.pem file by running the following terminal commands:
     >python
     >import certifi
     >certifi.where()
+    >quit()
 3. open both files in a text editor, copy the NRCan root certificate, then paste the certificate at the bottom of the pem file 

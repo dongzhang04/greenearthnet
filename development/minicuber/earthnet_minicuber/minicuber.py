@@ -229,10 +229,7 @@ class Minicuber:
         
         if "time" in cube:
             cube['time'] = pd.DatetimeIndex(cube['time'].values)
-            # print(cube['time'].values)
             cube = cube.drop_duplicates(dim='time').sortby('time')
-            # print(cube['time'].values)
-
             cube = cube.sel(time = slice(self.time_interval[:10], self.time_interval[-10:]))
 
         cube.attrs = {
@@ -285,7 +282,9 @@ class Minicuber:
             print(f"Downloading minicube at {specs['lon_lat']}")
 
         minicube = minicube.compute()
-
+        if "angle" in list(minicube.variables):
+            minicube = minicube.drop_vars(["angle"])
+            
         if verbose:
             print(f"Saving minicube at {specs['lon_lat']}")
 

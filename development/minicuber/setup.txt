@@ -24,8 +24,8 @@ with:
             stack = stack.assign_coords(band=["lc"])
 
 (earthnet-minicuber/providers/__init__)
-append era5_gcp to the import statement
-add "era5gcp": era5gcp.ERA5_GCP to PROVIDERS 
+append era5_gcp and eobs to the import statement 
+add "era5gcp": era5gcp.ERA5_GCP and "eobs": eobs.EOBS to PROVIDERS 
 when using the era5gcp provider, use the link: gs://gcp-public-data-arco-era5/ar/full_37-1h-0p25deg-chunk-1.zarr-v3
 
 (sen2nbar/c_factor) 

@@ -42,6 +42,8 @@ add the following code on line 232
             cube = cube.drop_duplicates(dim='time').sortby('time')
 
 add the following code to the save_minicube(cls, specs, savepath, verbose = True) method after minicube = minicube.compute() on line 284
+        if "s2_mask" in list(minicube.variables) and ("s2_dlmask" not in list(minicube.variables)):
+            minicube = minicube.rename({"s2_mask": "s2_dlmask"})
         if "angle" in list(minicube.variables):
             minicube = minicube.drop_vars(["angle"])
 

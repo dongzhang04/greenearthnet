@@ -47,19 +47,3 @@ Tseng, G. et al. Lightweight, Pre-trained Transformers for Remote Sensing Timese
 - previous self-supervised models for remote sensing data commonly ignored the temporal dimension and treated data as single-timestep images, and often only considered a single satellite product as opposed to a multimodal approach
 - the model developed in this paper (Presto) addresses these issues, resulting in a flexible model that can accommodate diverse input formats and perform effectively with missing/partial inputs
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-https://www.nature.com/articles/s41597-020-0479-6
-https://drive.google.com/drive/folders/1DicYv7HYg3HmNfoCQmvK-iGEnVH3HXXk
-add github issue

@@ -282,6 +282,10 @@ class Minicuber:
             print(f"Downloading minicube at {specs['lon_lat']}")
 
         minicube = minicube.compute()
+        
+        if "s2_mask" in list(minicube.variables) and ("s2_dlmask" not in list(minicube.variables)):
+            minicube = minicube.rename({"s2_mask": "s2_dlmask"})
+
         if "angle" in list(minicube.variables):
             minicube = minicube.drop_vars(["angle"])
             

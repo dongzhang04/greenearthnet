@@ -12,9 +12,9 @@
       </HistItem>
     </Histograms>
     <Metadata>
-      <MDI key="STATISTICS_MINIMUM">0</MDI>
       <MDI key="STATISTICS_MAXIMUM">18761</MDI>
       <MDI key="STATISTICS_MEAN">18489.522997416</MDI>
+      <MDI key="STATISTICS_MINIMUM">0</MDI>
       <MDI key="STATISTICS_STDDEV">2240.4196666129</MDI>
       <MDI key="STATISTICS_VALID_PERCENT">100</MDI>
     </Metadata>
@@ -32,9 +32,9 @@
       </HistItem>
     </Histograms>
     <Metadata>
-      <MDI key="STATISTICS_MINIMUM">0</MDI>
       <MDI key="STATISTICS_MAXIMUM">1</MDI>
       <MDI key="STATISTICS_MEAN">0.03267298306058</MDI>
+      <MDI key="STATISTICS_MINIMUM">0</MDI>
       <MDI key="STATISTICS_STDDEV">0.17777924299114</MDI>
       <MDI key="STATISTICS_VALID_PERCENT">100</MDI>
     </Metadata>
@@ -52,29 +52,71 @@
       </HistItem>
     </Histograms>
     <Metadata>
-      <MDI key="STATISTICS_MINIMUM">0</MDI>
       <MDI key="STATISTICS_MAXIMUM">8</MDI>
       <MDI key="STATISTICS_MEAN">3.544415733563</MDI>
+      <MDI key="STATISTICS_MINIMUM">0</MDI>
       <MDI key="STATISTICS_STDDEV">1.4966206440804</MDI>
       <MDI key="STATISTICS_VALID_PERCENT">100</MDI>
     </Metadata>
   </PAMRasterBand>
   <PAMRasterBand band="4">
     <Description>estimateLAI</Description>
+    <Metadata>
+      <MDI key="STATISTICS_MINIMUM">0</MDI>
+      <MDI key="STATISTICS_MAXIMUM">5252</MDI>
+      <MDI key="STATISTICS_MEAN">1369.4349698536</MDI>
+      <MDI key="STATISTICS_STDDEV">1105.381552123</MDI>
+      <MDI key="STATISTICS_VALID_PERCENT">100</MDI>
+    </Metadata>
   </PAMRasterBand>
   <PAMRasterBand band="5">
     <Description>networkID</Description>
+    <Metadata>
+      <MDI key="STATISTICS_MINIMUM">0</MDI>
+      <MDI key="STATISTICS_MAXIMUM">0</MDI>
+      <MDI key="STATISTICS_MEAN">0</MDI>
+      <MDI key="STATISTICS_STDDEV">0</MDI>
+      <MDI key="STATISTICS_VALID_PERCENT">100</MDI>
+    </Metadata>
   </PAMRasterBand>
   <PAMRasterBand band="6">
     <Description>partition</Description>
+    <Metadata>
+      <MDI key="STATISTICS_MINIMUM">0</MDI>
+      <MDI key="STATISTICS_MAXIMUM">17</MDI>
+      <MDI key="STATISTICS_MEAN">12.8576514499</MDI>
+      <MDI key="STATISTICS_STDDEV">3.8485252493081</MDI>
+      <MDI key="STATISTICS_VALID_PERCENT">100</MDI>
+    </Metadata>
   </PAMRasterBand>
   <PAMRasterBand band="7">
     <Description>errorLAI</Description>
+    <Metadata>
+      <MDI key="STATISTICS_MINIMUM">0</MDI>
+      <MDI key="STATISTICS_MAXIMUM">1616</MDI>
+      <MDI key="STATISTICS_MEAN">494.64254952627</MDI>
+      <MDI key="STATISTICS_STDDEV">245.76981893077</MDI>
+      <MDI key="STATISTICS_VALID_PERCENT">100</MDI>
+    </Metadata>
   </PAMRasterBand>
   <PAMRasterBand band="8">
     <Description>networkID_1</Description>
+    <Metadata>
+      <MDI key="STATISTICS_MINIMUM">0</MDI>
+      <MDI key="STATISTICS_MAXIMUM">0</MDI>
+      <MDI key="STATISTICS_MEAN">0</MDI>
+      <MDI key="STATISTICS_STDDEV">0</MDI>
+      <MDI key="STATISTICS_VALID_PERCENT">100</MDI>
+    </Metadata>
   </PAMRasterBand>
   <PAMRasterBand band="9">
     <Description>partition_1</Description>
+    <Metadata>
+      <MDI key="STATISTICS_MINIMUM">0</MDI>
+      <MDI key="STATISTICS_MAXIMUM">17</MDI>
+      <MDI key="STATISTICS_MEAN">12.8576514499</MDI>
+      <MDI key="STATISTICS_STDDEV">3.8485252493081</MDI>
+      <MDI key="STATISTICS_VALID_PERCENT">100</MDI>
+    </Metadata>
   </PAMRasterBand>
 </PAMDataset>

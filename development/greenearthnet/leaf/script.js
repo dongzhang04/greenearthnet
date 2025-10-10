@@ -56,7 +56,7 @@
 /* Region of interest , optional                                                  */
 /*--------------------------------------------------------------------------------*/
 
-var table = ee.FeatureCollection('projects/fast-blueprint-470916-f4/assets/ge1')
+var table = ee.FeatureCollection('projects/fast-blueprint-470916-f4/assets/ge11')
 var featureNumber = ee.Number(0);
 var geometry = ee.FeatureCollection(ee.Feature(table.toList(table.size()).get(featureNumber))).geometry();
 
@@ -173,8 +173,8 @@ var ExportCol = function(col, folder, scale, projectionBand, type, nimg, maxPixe
   for (var i = 0; i < n; i++) {
 
     // restrict image to map bounds
-    // var img = ee.Image(colList.get(i)); //
-    var img = ee.Image(colList.get(i)).select(['B4', 'B3', 'B2']); //for RGB surface reflectance 
+    // var img = ee.Image(colList.get(i)).select(['B4', 'B3', 'B2']);
+    var img = ee.Image(colList.get(i));
     var imgBounds = app.filters.mapBounds.intersection(img.geometry(),10) ;
     // determine fi there are any valid values by checking for a null return om a reduces
     if ( img.select('timestart').reduceRegion({ reducer: ee.Reducer.max(), geometry: imgBounds, scale: 100}) !== null) {
@@ -192,8 +192,7 @@ var ExportCol = function(col, folder, scale, projectionBand, type, nimg, maxPixe
                     };
 
       // export image for map bounds only using desired type
-    //   var projection = img.select(ee.List(projectionBand)).projection().getInfo();
-      var projection = img.select([img.bandNames().get(0)]).projection().getInfo(); //for RGB surface reflectance
+      var projection = img.select("B4").projection().getInfo();
       Export.image.toDrive({
         image:imgtype[type],
         description: id,
@@ -382,6 +381,7 @@ app.refreshMapLayer = function() {
        var rgb = filtered.select(['B4','B3','B2']);
         Map.clear()
         Map.addLayer(filtered, { bands:'date'},'Date');
+        Map.addLayer(filtered,  colOptions.visParams  , 'Surface_Reflectance');
         Map.addLayer(rgb,  colOptions.visParams  , 'Surface_Reflectance');
       break;
       default:

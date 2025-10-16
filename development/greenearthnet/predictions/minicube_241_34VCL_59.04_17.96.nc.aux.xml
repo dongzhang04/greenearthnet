@@ -1,17 +1,4 @@
 <PAMDataset>
-  <Metadata>
-    <MDI key="lat#_FillValue">nan</MDI>
-    <MDI key="lon#_FillValue">nan</MDI>
-    <MDI key="ndvi_pred#_FillValue">nan</MDI>
-    <MDI key="NETCDF_DIM_EXTRA">{time}</MDI>
-    <MDI key="NETCDF_DIM_time_DEF">{20,6}</MDI>
-    <MDI key="NETCDF_DIM_time_VALUES">{26055,26060,26065,26070,26075,26080,26085,26090,26095,26100,26105,26110,26115,26120,26125,26130,26135,26140,26145,26150}</MDI>
-    <MDI key="time#calendar">standard</MDI>
-    <MDI key="time#long_name">Time in days</MDI>
-    <MDI key="time#standard_name">time</MDI>
-    <MDI key="time#units">days since 1950-01-01</MDI>
-    <MDI key="time#_FillValue">nan</MDI>
-  </Metadata>
   <PAMRasterBand band="1">
     <Histograms>
       <HistItem>

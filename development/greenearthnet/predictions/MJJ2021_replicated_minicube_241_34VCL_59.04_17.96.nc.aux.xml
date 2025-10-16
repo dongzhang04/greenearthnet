@@ -1,14 +1,4 @@
 <PAMDataset>
-  <Metadata>
-    <MDI key="lat#_FillValue">nan</MDI>
-    <MDI key="lon#_FillValue">nan</MDI>
-    <MDI key="ndvi_pred#_FillValue">nan</MDI>
-    <MDI key="NETCDF_DIM_EXTRA">{time}</MDI>
-    <MDI key="NETCDF_DIM_time_DEF">{20,10}</MDI>
-    <MDI key="NETCDF_DIM_time_VALUES">{54,59,64,69,74,79,84,89,94,99,104,109,114,119,124,129,134,139,144,149}</MDI>
-    <MDI key="time#calendar">proleptic_gregorian</MDI>
-    <MDI key="time#units">days since 2021-03-10</MDI>
-  </Metadata>
   <PAMRasterBand band="1">
     <Histograms>
       <HistItem>

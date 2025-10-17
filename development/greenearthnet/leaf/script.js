@@ -382,7 +382,7 @@ app.refreshMapLayer = function() {
         Map.clear()
         Map.addLayer(filtered, { bands:'date'},'Date');
         Map.addLayer(filtered,  colOptions.visParams  , 'Surface_Reflectance');
-        Map.addLayer(rgb,  colOptions.visParams  , 'Surface_Reflectance');
+        Map.addLayer(rgb,  colOptions.visParams  , 'Surface_Reflectance_RGB');
       break;
       default:
       

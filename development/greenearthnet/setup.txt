@@ -19,6 +19,7 @@ python.exe -m pip install --upgrade pip
 pip install pip-system-certs
 pip uninstall numpy
 conda install numpy=1.26.4 --force-reinstall
+pip install --force-reinstall pillow==9.5.0 (for running train.py)
 
 cpu only install ('upgrade_lightning' branch):
 conda create -n greenearthnet -c conda-forge python 
@@ -41,6 +42,8 @@ python.exe -m pip install --upgrade pip
 pip install pip-system-certs
 pip uninstall numpy
 conda install numpy=1.26.4 --force-reinstall
+pip install --force-reinstall pillow==9.5.0 (for running train.py)
+
 
 4. download the greenaerthnet dataset, it will require around 143GB:
 python

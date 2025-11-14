@@ -1,7 +1,8 @@
 #!/bin/bash -l
 #SBATCH --export=USER,LOGNAME,HOME,MAIL,PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 #SBATCH --job-name=greenerathnet_train_10sites_test      
-#SBATCH --output=/gpfs/fs5/nrcan/nrcan_geobase/work/doz000/projects/fork/development/hpc/experiments  
+#SBATCH --output=%x-%j.out
+#SBATCH --error=%x-%j.err
 #SBATCH --mail-type=START,END,FAIL
 #SBATCH --mail-user=dong.zhang@nrcan-rncan.gc.ca
 #SBATCH --account=nrcan_geobase__gpu_a100

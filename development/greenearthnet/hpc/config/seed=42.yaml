@@ -22,9 +22,9 @@ Trainer:
 
 Data:
     test_track: "ood-t_chopped"
-    train_batch_size: 16
-    val_batch_size: 8
-    test_batch_size: 8
+    train_batch_size: 8
+    val_batch_size: 4
+    test_batch_size: 4
     num_workers: 32
     dl_cloudmask: True
     allow_fastaccess: False

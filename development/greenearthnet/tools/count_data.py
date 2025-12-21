@@ -13,8 +13,8 @@ def count_files(root, tile):
     return i, tile
 
 if __name__ == "__main__":
-    print("Crop")
-    base_dir = r"E:\DZ\retraining\TrainingData\crop_dominated"
+    print("Shrub")
+    base_dir = r"E:\DZ\retraining\TrainingData\shrub_dominated"
     max = 0
     location = ""
     for root, dirs, files in os.walk(base_dir):

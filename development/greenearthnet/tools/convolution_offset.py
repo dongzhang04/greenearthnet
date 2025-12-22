@@ -10,6 +10,10 @@ from pyproj import Transformer
 from pyproj.aoi import AreaOfInterest
 from pyproj.database import query_utm_crs_info
 
+import os
+import subprocess
+import sys
+
 class OffsetMinicuber(Minicuber):
     def __init__(self, specs, spatial_offset=None, spatial_offset_distance=40, temporal_offset=None):
         super().__init__(specs)
@@ -206,26 +210,73 @@ def average_offset_predictions(center, output_path):
     file_name = file_name.replace("\\", "/").split("/")[-1]
     output_path = output_path.replace("\\", "/")
     output_path = output_path if output_path.endswith("/") else output_path + "/"
-    print(file_name)
-    print(output_path)
+    # print(file_name)
+    # print(output_path)
     mean_ds.to_netcdf(output_path + file_name + "_average.nc")
 
-if __name__ == "__main__":
-    bands = ['TG', 'TN', 'TX', 'RR', 'PP', 'HU', 'FG', 'QQ']
-    paths = ["C:/Users/dozhang/Downloads/tg_ens_mean_0.1deg_reg_v26.0e.nc", 
-            "C:/Users/dozhang/Downloads/tn_ens_mean_0.1deg_reg_v26.0e.nc",
-            "C:/Users/dozhang/Downloads/tx_ens_mean_0.1deg_reg_v26.0e.nc",
-            "C:/Users/dozhang/Downloads/rr_ens_mean_0.1deg_reg_v26.0e.nc",
-            "C:/Users/dozhang/Downloads/pp_ens_mean_0.1deg_reg_v26.0e.nc",
-            "C:/Users/dozhang/Downloads/hu_ens_mean_0.1deg_reg_v26.0e.nc",
-            "C:/Users/dozhang/Downloads/fg_ens_mean_0.1deg_reg_v26.0e.nc",
-            "C:/Users/dozhang/Downloads/qq_ens_mean_0.1deg_reg_v26.0e.nc"]
-    bands_dict = dict(zip(bands, paths))
+
+bands = ['TG', 'TN', 'TX', 'RR', 'PP', 'HU', 'FG', 'QQ']
+paths = ["C:/Users/dozhang/Downloads/tg_ens_mean_0.1deg_reg_v26.0e.nc", 
+        "C:/Users/dozhang/Downloads/tn_ens_mean_0.1deg_reg_v26.0e.nc",
+        "C:/Users/dozhang/Downloads/tx_ens_mean_0.1deg_reg_v26.0e.nc",
+        "C:/Users/dozhang/Downloads/rr_ens_mean_0.1deg_reg_v26.0e.nc",
+        "C:/Users/dozhang/Downloads/pp_ens_mean_0.1deg_reg_v26.0e.nc",
+        "C:/Users/dozhang/Downloads/hu_ens_mean_0.1deg_reg_v26.0e.nc",
+        "C:/Users/dozhang/Downloads/fg_ens_mean_0.1deg_reg_v26.0e.nc",
+        "C:/Users/dozhang/Downloads/qq_ens_mean_0.1deg_reg_v26.0e.nc"]
+bands_dict = dict(zip(bands, paths))
+geom_folder = "C:/Users/dozhang/Downloads/geom_90M"
+
+
+def copy_specs(minicube_path):
+    ds = xr.open_dataset(minicube_path)
+    ds_B4 = ds["s2_B04"]
+    dates = ds.time.values
+    end_date = str(dates[-1]).split("T")[0]
+
+    for i in range(len(dates)): 
+        if not ds_B4.sel(time=dates[i]).isnull().all().item():
+            offset = i%5
+            break
+    
+    if offset != 0:
+        days_removed = 5-offset
+        dt = dates[0]
+        removed_dates = [0]*days_removed
+        for i in range(days_removed):
+            dt = dt - np.timedelta64(1, "D")
+            removed_dates[-1*(i+1)] = str(dt)
+
+        
+        start_date = removed_dates[0].split("T")[0]
+    else:
+        removed_dates = None
+        start_date = str(dates[0]).split("T")[0]
+
+    latitude = np.median(ds.lat)
+    longitude = np.median(ds.lon)
+
+    geom_lat = int(latitude - (latitude%5))
+    geom_lon = int(longitude - (longitude%5))
+    if geom_lon >=0:
+        if geom_lon < 10:
+            geom_lon = "e00" + str(geom_lon)
+        else:
+            geom_lon = "e0" + str(geom_lon)
+    else:
+        if longitude == geom_lon:
+            longitude-=5
+        geom_lon = abs(geom_lon)
+        if geom_lon == 5:
+            geom_lon = "w005"
+        else:
+            geom_lon = "w0" + str(geom_lon)
+
     specs = {
-        "lon_lat": (10.40, 51.65), # center pixel
+        "lon_lat": (longitude, latitude), # center pixel
         "xy_shape": (128, 128), # width, height of cutout around center pixel
         "resolution": 20, # in meters.. will use this on a local UTM grid..
-        "time_interval": "2021-03-10/2021-08-07",
+        "time_interval": f"{start_date}/{end_date}",
         "providers": [
             {
                 "name": "s2",
@@ -252,7 +303,7 @@ if __name__ == "__main__":
             },
             {
                 "name": "geom",
-                "kwargs": {"filepath": "C:/Users/dozhang/Downloads/geom_90M_n50e010.tif"}
+                "kwargs": {"filepath": f"{geom_folder}/geom_90M_n{geom_lat}{geom_lon}.tif"}
             },
             {
                 "name": "eobs",
@@ -260,8 +311,97 @@ if __name__ == "__main__":
             }
         ],
     }
-    # generate_offset_minicubes(specs, "C:/Users/dozhang/Downloads/offset/MJJ_minicube_120_32UNC_51.65_10.40.nc", temporal_offset="2021-03-10T00:00:00")
-    # average_offset_predictions(r"C:\Users\dozhang\Downloads\offset\predictions\ood-t_chopped\MJJ_minicube_120_32UNC_51.65_10.40.nc", r"C:\Users\dozhang\Downloads\offset\predictions")
+    ds.close()
+    return specs, removed_dates
 
 
+sites = {
+        "Crop": ["29TQF",
+             "30TWK",
+             "30UYU",
+        ###      "31TBF", 
+             "31UFP", 
+             "32UNC", 
+             "33UWT", 
+             "33UXP", 
+             "34TFL",
+             "34SEJ"],
 
+        "Forest": ["29TNE",
+               "30TTK",
+               "31TBF",
+               "31UFP",
+               "33UWT", 
+               "33VVG",
+               "33VUF", 
+        ###        "33VUG",
+               "34SFF", 
+               "34SEJ"],
+
+        "Shrub": ["29SND",
+              "29SPC", 
+              "29TQF", 
+        ###       "30TTK",
+              "30STJ", 
+              "30UYV",
+              "31TBF",
+              "32TML", 
+              "34SFF", 
+              "34TCL"]
+    }
+copy_path = "E:/DZ/retraining"
+offset_path = "E:/DZ/offset"
+def copy_minicubes():
+    for landcover in sites:
+        print(f"copying {landcover}")
+        for tile in sites[landcover]:
+            print(tile)
+            in_dir = f"{copy_path}/{landcover}/{tile}/ood-t_chopped/MJJ21"
+            out_dir = f"{offset_path}/{landcover}/{tile}/ood-t_chopped/MJJ21"
+            os.makedirs(out_dir, exist_ok=True)
+            for file in os.listdir(in_dir):
+                if file.endswith(".nc"):
+                    file_path = os.path.join(in_dir, file)
+                    specs, removed_dates = copy_specs(file_path)
+                    generate_offset_minicubes(specs, out_dir + f"/{file}", temporal_offset=removed_dates)
+             
+
+    print("finished")
+
+weights = "E:/DZ/model_weights/contextformer/contextformer6M/seed=42.ckpt"
+config = "E:/DZ/model_configs/contextformer/contextformer6M/seed=42.yaml"
+def predict_offsets():
+    for landcover in sites:
+        print("Land cover type:", landcover)
+        for tile in sites[landcover]:
+            dir = f"{offset_path}/{landcover}/{tile}"
+            predictions = dir + "/predictions"
+            os.makedirs(predictions, exist_ok=True)
+
+            print("Running predictions for tile:", tile)
+            subprocess.run([sys.executable, "C:/Users/dozhang/Documents/GitHub/greenearthnet/development/greenearthnet/test.py", 
+                            config,
+                            weights,
+                            "--track", "ood-t_chopped",
+                            "--pred_dir", predictions,
+                            "--data_dir", dir], check=True)
+    print("finished")
+
+def average_minicube_predictions():
+    for landcover in sites:
+        print(landcover)
+        for tile in sites[landcover]:
+            print(tile)
+            dir = f"{offset_path}/{landcover}/{tile}/predictions/MJJ21"
+            for file in os.listdir(dir):
+                if not file.endswith(("NE.nc", "NW.nc", "SE.nc", "SW.nc")) and file.endswith(".nc"):
+                    file_path = os.path.join(dir, file)
+                    average_offset_predictions(file_path, dir)            
+
+    print("finished")
+
+if __name__ == "__main__":
+    
+    copy_minicubes()
+    predict_offsets()
+    average_minicube_predictions()

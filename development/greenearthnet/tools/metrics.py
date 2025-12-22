@@ -4,6 +4,7 @@ from skimage.metrics import structural_similarity as ssim
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
+import os
 
 def ssim_wrapper(img1, img2):
     return ssim(img1, img2, data_range=2.0)
@@ -15,9 +16,9 @@ def calculate_metrics(input_nc, reference_nc, roi_lat=None, roi_lon=None, subsam
     reference_B4 = reference["s2_B04"]
     dates = reference.time.values
     
-    for i in range(5): 
+    for i in range(len(dates)): 
         if not reference_B4.sel(time=dates[i]).isnull().all().item():
-            offset = i
+            offset = i%5
             break
     
     for i in range(dates.size):
@@ -104,55 +105,99 @@ def plot_metric(crop_datasets, forest_datasets, shrub_datasets, metric):
         hue="land_type"
     )
 
+def gather_inputs(root, predictions, sites):
+    collection = []
+    for landcover in sites:
+        landcover_sites = []
+        for tile in sites[landcover]:
+            dir = f"{root}/{landcover}/{tile}/{predictions}/MJJ21"
+            for file in os.listdir(dir):
+                if file.endswith(".nc"):
+                    landcover_sites.append(os.path.join(dir, file))
+        collection.append(landcover_sites)
+    return collection[0], collection[1], collection[2]
+
+def gather_references(root, sites):
+    collection = []
+    for landcover in sites:
+        landcover_sites = []
+        for tile in sites[landcover]:
+            dir = f"{root}/{landcover}/{tile}/ood-t_chopped/MJJ21"
+            for file in os.listdir(dir):
+                if file.endswith(".nc") and not file.endswith(("NE.nc", "NW.nc", "SE.nc", "SW.nc")):
+                    landcover_sites.append(os.path.join(dir, file))
+        collection.append(landcover_sites)
+    return collection[0], collection[1], collection[2]
+
+def gather_offset_inputs(root, prediction_type, sites):
+    collection = []
+    for landcover in sites:
+        landcover_sites = []
+        for tile in sites[landcover]:
+            dir = f"{root}/{landcover}/{tile}/predictions/MJJ21"
+            for file in os.listdir(dir):
+                if prediction_type == "offset":
+                    if file.endswith("average.nc"):
+                        landcover_sites.append(os.path.join(dir, file))
+                else:
+                    if file.endswith(".nc") and not file.endswith(("NE.nc", "NW.nc", "SE.nc", "SW.nc", "average.nc")):
+                        landcover_sites.append(os.path.join(dir, file))
+                        
+        collection.append(landcover_sites)
+    return collection[0], collection[1], collection[2]
+
+
 if __name__ == "__main__":
-    # input = r"E:\DZ\predictions\contextformer6M_seed42\MJJ21\minicube_0_29SND_39.29_-8.56.nc"
-    # reference = r"E:\DZ\greenearthnet\ood-t_chopped\MJJ21\minicube_0_29SND_39.29_-8.56.nc"
-    input = r"E:\DZ\predictions\contextformer6M_seed42\MJJ21\minicube_225_34TET_47.37_22.05.nc"
-    reference = r"E:\DZ\greenearthnet\ood-t_chopped\MJJ21\minicube_225_34TET_47.37_22.05.nc"
+    # input = r"E:\DZ\predictions\contextformer6M_seed42\MJJ21\minicube_225_34TET_47.37_22.05.nc"
+    # reference = r"E:\DZ\greenearthnet\ood-t_chopped\MJJ21\minicube_225_34TET_47.37_22.05.nc"
     
-    print(calculate_metrics(input, reference))
+    # print(calculate_metrics(input, reference))
 
-        
-    crop_input = [
-        r"E:\DZ\predictions\contextformer6M_seed42\MJJ21\minicube_0_29SND_39.29_-8.56.nc",
-        r"E:\DZ\predictions\contextformer6M_seed42\MJJ21\minicube_1_29SND_39.34_-8.53.nc",
-        r"E:\DZ\predictions\contextformer6M_seed42\MJJ21\minicube_2_29SND_38.90_-8.35.nc"
+    sites = {
+        "Crop": ["29TQF",
+                "30TWK",
+                "30UYU",
+                "31TBF", 
+                "31UFP", 
+                "32UNC", 
+                "33UWT", 
+                "33UXP", 
+                "34TFL",
+                "34SEJ"],
 
-    ]
-    crop_reference = [
-        r"E:\DZ\greenearthnet\ood-t_chopped\MJJ21\minicube_0_29SND_39.29_-8.56.nc",
-        r"E:\DZ\greenearthnet\ood-t_chopped\MJJ21\minicube_1_29SND_39.34_-8.53.nc",
-        r"E:\DZ\greenearthnet\ood-t_chopped\MJJ21\minicube_2_29SND_38.90_-8.35.nc"
-    ]
+        "Forest": ["29TNE",
+                "30TTK",
+                "31TBF",
+                "31UFP",
+                "33UWT", 
+                "33VVG",
+                "33VUF", 
+                "33VUG",
+                "34SFF", 
+                "34SEJ"],
 
-    forest_input = [
-        r"E:\DZ\predictions\contextformer6M_seed42\MJJ21\minicube_3_29SPC_38.68_-7.65.nc",
-        r"E:\DZ\predictions\contextformer6M_seed42\MJJ21\minicube_4_29SPC_38.66_-7.79.nc",
-        r"E:\DZ\predictions\contextformer6M_seed42\MJJ21\minicube_5_29SPC_38.81_-6.73.nc"
-    ]
-    forest_reference = [
-        r"E:\DZ\greenearthnet\ood-t_chopped\MJJ21\minicube_3_29SPC_38.68_-7.65.nc",
-        r"E:\DZ\greenearthnet\ood-t_chopped\MJJ21\minicube_4_29SPC_38.66_-7.79.nc",
-        r"E:\DZ\greenearthnet\ood-t_chopped\MJJ21\minicube_5_29SPC_38.81_-6.73.nc"
-    ]
-
-    shrub_input = [
-        r"E:\DZ\predictions\contextformer6M_seed42\MJJ21\minicube_6_29SQB_37.12_-5.86.nc",
-        r"E:\DZ\predictions\contextformer6M_seed42\MJJ21\minicube_7_29SQB_37.00_-6.50.nc",
-        r"E:\DZ\predictions\contextformer6M_seed42\MJJ21\minicube_8_29SQB_37.77_-5.77.nc"
-    ]   
-    shrub_reference = [
-        r"E:\DZ\greenearthnet\ood-t_chopped\MJJ21\minicube_6_29SQB_37.12_-5.86.nc",
-        r"E:\DZ\greenearthnet\ood-t_chopped\MJJ21\minicube_7_29SQB_37.00_-6.50.nc",
-        r"E:\DZ\greenearthnet\ood-t_chopped\MJJ21\minicube_8_29SQB_37.77_-5.77.nc"
-    ]
+        "Shrub": ["29SND",
+                "29SPC", 
+                "29TQF", 
+                "30TTK",
+                "30STJ", 
+                "30UYV",
+                "31TBF",
+                "32TML", 
+                "34SFF", 
+                "34TCL"]
+    }
+    root = "E:/DZ/retraining"
+    predictions = "retrained_predictions"
+    crop_input, forest_input, shrub_input = gather_inputs(root, predictions, sites)
+    crop_reference, forest_reference, shrub_reference = gather_references(root, sites)
 
     crop_datasets = gather_metrics(crop_input, crop_reference)
     forest_datasets = gather_metrics(forest_input, forest_reference)
     shrub_datasets = gather_metrics(shrub_input, shrub_reference)
     metrics = ["Uncertainty", "Accuracy", "Precision", "Pearson Correlation", "SSIM"]
     for i in range(len(metrics)):
-        # plt.figure(figsize=(10,6))
+        plt.figure(figsize=(10,6))
         plot_metric(crop_datasets[metrics[i]], forest_datasets[metrics[i]], shrub_datasets[metrics[i]], metrics[i])
         plt.title(f"{metrics[i]} across Land Types over Time")
         plt.xlabel("Time (5-day intervals)")

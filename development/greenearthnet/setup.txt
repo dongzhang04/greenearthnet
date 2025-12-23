@@ -55,5 +55,7 @@ import earthnet as entk
 entk.download(dataset = "greenearthnet", split = "all", save_directory = "data_dir")
 quit()
 
-5. to run the model (test.py) it may be necessary to add <del setting_dict["Trainer"]["strategy"]> to line 121 in test.py (inside the <if "gpus" in setting_dict["Trainer"]>) if cpu only or using just a single gpu 
+5. download model weights and configs from https://zenodo.org/records/10793870
+
+Note: to run the model (test.py) it may be necessary to add <del setting_dict["Trainer"]["strategy"]> to line 121 in test.py (inside the <if "gpus" in setting_dict["Trainer"]>) if cpu only or using just a single gpu 
 still need to test the script with multiple gpus (with the ddp strategy)

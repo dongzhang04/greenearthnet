@@ -57,3 +57,7 @@ bypassing SSL errors when accessing cloud datasets:
     >certifi.where()
     >quit()
 3. open both files in a text editor, copy the NRCan root certificate, then paste the certificate at the bottom of the pem file 
+
+EOBS data can be downloed from the ensemble mean section of version 26.0e at https://surfobs.climate.copernicus.eu/dataaccess/access_eobs.php#datafiles
+Geomorpho90m data initially had a google drive folder where I downloaded data from but it has been deleted sometime duriung the past 3 months.
+The data I downloaded can be copied from \\W-BSC-202561\Dong 

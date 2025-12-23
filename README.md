@@ -1,3 +1,5 @@
+All work is done in the 'development' folder. Excluding the 'documents' folder, everything outside of 'development' is from Vitus' original greenearthnet repository.
+
 # Multi-modal learning for geospatial vegetation forecasting
 ## _Code for Benson et. al., CVPR (2024)_
 

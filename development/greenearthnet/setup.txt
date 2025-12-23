@@ -3,9 +3,9 @@
 2. run the following command in an anaconda terminal:
 conda config --set ssl_verify path/to/ca-bundle.crt
 
-3. set up the environment:
+3. set up the environment (choose an installation option):
 
-cpu only install (main branch):
+cpu only install (main branch, older version of pytorch lightning):
 conda create -n greenearthnet python=3.10
 conda activate greenearthnet
 conda install pytorch==1.13.1 torchvision==0.14.1 torchaudio==0.13.1 cpuonly -c pytorch
@@ -21,7 +21,7 @@ pip uninstall numpy
 conda install numpy=1.26.4 --force-reinstall
 pip install --force-reinstall pillow==9.5.0 (for running train.py)
 
-cpu only install ('upgrade_lightning' branch):
+cpu only install ('upgrade_lightning' branch, newer version of pytorch lightning):
 conda create -n greenearthnet -c conda-forge python 
 conda activate greenearthnet
 pip install torch torchvision --index-url https://download.pytorch.org/whl/cu126
@@ -43,6 +43,10 @@ pip install pip-system-certs
 pip uninstall numpy
 conda install numpy=1.26.4 --force-reinstall
 pip install --force-reinstall pillow==9.5.0 (for running train.py)
+
+
+Note: tools\generate_offset_minicubes.py requires the minicuber environment to run instead of the greenearthnet environment.
+please see development\minicuber\setup.txt for instructions. 
 
 
 4. download the greenaerthnet dataset, it will require around 143GB:

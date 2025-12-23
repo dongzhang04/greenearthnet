@@ -402,6 +402,9 @@ def average_minicube_predictions():
 
 if __name__ == "__main__":
     
+    #requires the minicuber environment
     copy_minicubes()
-    predict_offsets()
-    average_minicube_predictions()
+
+    #requires the greenearthnet environment, use calculate_offset_average.py for these tasks instead.
+    # predict_offsets()
+    # average_minicube_predictions()

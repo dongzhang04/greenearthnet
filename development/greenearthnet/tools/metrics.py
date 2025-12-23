@@ -9,18 +9,22 @@ import os
 def ssim_wrapper(img1, img2):
     return ssim(img1, img2, data_range=2.0)
 
-def calculate_metrics(input_nc, reference_nc, roi_lat=None, roi_lon=None, subsampling_factor=1):
+#takes in a single prediction minicube pair (file names) to calculate metrics on a single prediction
+#outputs a dictionary whose entries are xarrays of a single metric with 20 values (one for each prediction timestep)
+def calculate_metrics(input_nc, reference_nc):
     cloud_threshold = 0.2
     input_ndvi = xr.open_dataset(input_nc)["ndvi_pred"]
     reference = xr.open_dataset(reference_nc)
     reference_B4 = reference["s2_B04"]
     dates = reference.time.values
     
+    #finding the first date with an S2 image and determining the image offset
     for i in range(len(dates)): 
         if not reference_B4.sel(time=dates[i]).isnull().all().item():
             offset = i%5
             break
-    
+
+    #dropping non S2 imagery dates 
     for i in range(dates.size):
         if i < offset:
             reference = reference.drop_sel(time=dates[i])
@@ -29,14 +33,19 @@ def calculate_metrics(input_nc, reference_nc, roi_lat=None, roi_lon=None, subsam
             if offset <55:
                 reference = reference.drop_sel(time=dates[i])   
 
+    #ndvi calculation
     reference["ndvi"] = (("time", "x", "y"), np.zeros((20, 128, 128)))
     reference["ndvi"] = (reference["s2_B8A"] - reference["s2_B04"]) / xr.where((reference["s2_B8A"] + reference["s2_B04"]) == 0, np.nan, (reference["s2_B8A"] + reference["s2_B04"]))
     
+    #masking cloudy pixels with NaNs which are handled by numpy and xarray methods
     masked = reference.where(reference["s2_dlmask"] == 0)
     reference_ndvi = masked["ndvi"]
+    #NaNs are not handled by skimage, so clouds are masked with the average NDVI value of the timestep
     ssim_reference_ndvi = reference_ndvi.fillna(reference_ndvi.mean(dim=("lat", "lon"), skipna=True))
-    residuals = input_ndvi - reference_ndvi
 
+    residuals = input_ndvi - reference_ndvi
+    
+    #metrics calculations
     U = np.sqrt((residuals**2).mean(dim=("lat", "lon"))) #RMSE
     A = (residuals).mean(dim=("lat", "lon"))
     P = np.sqrt(((residuals - A)**2).mean(dim=("lat", "lon")))
@@ -50,6 +59,7 @@ def calculate_metrics(input_nc, reference_nc, roi_lat=None, roi_lon=None, subsam
         output_dtypes=[float]
     )
 
+    #dropping metrics for dates that are too cloudy
     cloud = (reference["s2_dlmask"] == 0).sum(dim=["lat", "lon"]) < (128*128*(1-cloud_threshold))
     for i in range(20):
         if cloud[i].item():
@@ -67,6 +77,8 @@ def calculate_metrics(input_nc, reference_nc, roi_lat=None, roi_lon=None, subsam
         "SSIM": SSIM
     }
 
+#takes in an array of prediction file names and an array of corresponding minicube file names to calculate metrics on multiple predictions
+#outputs a dictionary where each entry contains a collection of xarrays; each xarray corresponds to the given metric of a single prediction
 def gather_metrics(input_files, reference_files):
     U = []
     A = []
@@ -88,15 +100,22 @@ def gather_metrics(input_files, reference_files):
         "SSIM": SSIM
     }
 
+#expects each dataset to be an array of xarrays
 def plot_metric(crop_datasets, forest_datasets, shrub_datasets, metric):
     datasets = [crop_datasets, forest_datasets, shrub_datasets]
+    
+    #converting xarrays to pandas dataframes, replacing the time dimension's datetimes with intergers corresponding to the timestpe
+    #and adding a landcover-type variable
     for l in range(3):
         for i in range(len(datasets[l])):
             datasets[l][i] = datasets[l][i].assign_coords(time=np.arange(1, datasets[l][i].sizes["time"] + 1)).to_dataframe(name=metric).reset_index().assign(land_type=["Crop", "Forest", "Shrub"][l])
 
+    #merging each prediction's dataframe into a single dataframe for the entire landcover-type 
     crop_data = pd.concat(datasets[0], ignore_index=True)
     forest_data = pd.concat(datasets[1], ignore_index=True)
     shrub_data = pd.concat(datasets[2], ignore_index=True)
+
+    #merging all the data into a single dataframe to be plotted
     all_data = pd.concat([crop_data, forest_data, shrub_data], ignore_index=True)
     sns.boxplot(
         data=all_data,
@@ -105,6 +124,8 @@ def plot_metric(crop_datasets, forest_datasets, shrub_datasets, metric):
         hue="land_type"
     )
 
+#returns arrays of prediction files, with the predictions argument specifying whether these are original or retrained predictions
+#the three arrays returned correspond to each of the 3 landcover types
 def gather_inputs(root, predictions, sites):
     collection = []
     for landcover in sites:
@@ -117,6 +138,8 @@ def gather_inputs(root, predictions, sites):
         collection.append(landcover_sites)
     return collection[0], collection[1], collection[2]
 
+#returns arrays of minicubes files
+#the three arrays returned correspond to each of the 3 landcover types
 def gather_references(root, sites):
     collection = []
     for landcover in sites:
@@ -129,6 +152,9 @@ def gather_references(root, sites):
         collection.append(landcover_sites)
     return collection[0], collection[1], collection[2]
 
+#returns arrays of blocking treatment related prediction files
+#prediction_type = "offset" specifies returniing the averaged prediction, any other value will return the center ("original") prediction
+#the three arrays returned correspond to each of the 3 landcover types
 def gather_offset_inputs(root, prediction_type, sites):
     collection = []
     for landcover in sites:

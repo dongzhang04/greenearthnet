@@ -16,7 +16,7 @@
 #SBATCH --gpus-per-task=4
 #SBATCH --comment="image=registry.maze.science.gc.ca/ssc-hpcs/generic-job:ubuntu22.04"
 
-nvidia-smi #prints the status of GPUs the script is using
+nvidia-smi #prints the status of the GPUs the script is using
 
 # load the CUDA toolkit
 . ssmuse-sh -d hpco/exp/cuda-12.2.2
